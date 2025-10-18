@@ -66,12 +66,18 @@ class ApiController extends Controller
         return response()->json([
             "status" => true,
             "message" => "User Profile Data",
-            "data" => $userdata
+            "data" => $userdata,
+            "id" => auth()->user()->id
         ]);
     }
 
     // Logout API
     public function logout() {
+        auth()->user()->tokens()->delete();
 
+        return response()->json([
+            "status" => true,
+            "message" => "User Logged Out"
+        ]);
     }
 }

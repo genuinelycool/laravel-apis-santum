@@ -9,6 +9,7 @@ Route::post("login", [ApiController::class, "login"]);
 
 Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::get("profile", [ApiController::class, "profile"]);
+    Route::get("logout", [ApiController::class, "logout"]);
 });
 
 // Route::get('/user', function (Request $request) {
