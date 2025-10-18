@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class ApiController extends Controller
 {
@@ -25,8 +26,37 @@ class ApiController extends Controller
     }
 
     // Login API
-    public function login() {
+    public function login(Request $request) {
+        $request->validate([
+            "email" => "required|email",
+            "password" => "required"
+        ]);
 
+        // User check By Email
+        $user = User::where("email", $request->email)->first();
+
+        // Password Check
+        if(!empty($user)) {
+            if(Hash::check($request->password, $user->password)) {
+                $token = $user->createToken("myToken")->plainTextToken;
+
+                return response()->json([
+                    "status" => true,
+                    "message" => "Logged In Successfully",
+                    "token" => $token
+                ]);
+            } else {
+                return response()->json([
+                    "status" => false,
+                    "message" => "Password does not match"
+                ]);
+            }
+        } else {
+            return response()->json([
+                "status" => false,
+                "message" => "Email is invalid"
+            ]);
+        }
     }
 
     // Profile API
